@@ -1,0 +1,493 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!--
+      "StAuth10222: I James Gelfand, 000275852 certify that this material is my original work. 
+      No other person's work has been used without due acknowledgement. 
+      I have not made my work available to anyone else."
+    -->
+    
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Title -->
+    <title>Social Media Disaster Monitoring Application</title>
+    <!-- Vue -->
+    <script src="https://unpkg.com/vue@next"></script>
+    <script src="https://unpkg.com/vuex@4"></script>
+    <script src="https://unpkg.com/vue-router@4"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    
+    <style>
+      .navbar-brand {
+        padding: 15px;
+      }
+      .nav-item {
+        padding: 15px;
+        font-weight: bolder;
+        color: white;
+      }
+      .router-link-exact-active {
+        background-color: rgb(57, 110, 52);
+        padding: 15px;
+        font-weight: bolder;
+        border-radius: 20px;
+        color: white;
+      }
+      #divBack {
+        color: black;
+        font-weight: bolder;
+      }
+    </style>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+
+  </head>
+  <body>
+    <div id="app">
+      <navbar></navbar>
+      <br/>
+      <main class="container">
+        <router-view></router-view>
+      </main>
+  <script>
+    // create the connection
+    var socket = io(); 
+
+    const store = Vuex.createStore({
+      state() {
+        return {
+          disasterFeed: [],
+        }
+      },
+      plugins: [store => {
+          socket.on('post', data => {
+              store.commit("addPost", data);
+          });
+      }],
+      mutations : {
+        // Here we add a new post to our feed
+        addPost(state, newPost) {
+          state.disasterFeed.push(newPost)
+        },
+      },
+      getters: {
+        getFeed: state => {
+          return state.disasterFeed;
+        },
+        feedTotal: (state, getters) => {
+          return state.disasterFeed.length;
+        },
+      },
+    });
+
+    // create the app
+    const app = Vue.createApp({});
+
+    app.component("navbar", {
+
+      template: 
+        `<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+          <a class="navbar-brand" href="#">Lab 6</a>
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+              <li class="nav-item">
+                <router-link to="/">Home</router-link>
+              </li>
+              <li class="nav-item">
+                <router-link to="/feed">Live Feed</router-link>
+              </li>
+              <li class="nav-item">
+                <router-link to="/analytics">Analytics</router-link>
+              </li>
+            </ul>
+          </div>
+        </nav>`,
+    });
+
+    const Home = {
+        template:
+        `<div class="p-4 p-md-5 mb-4 text-white rounded bg-dark" style="background-image: url('myimages/hurricane.gif'); background-size: cover;">
+            <div class="col-md-6 px-0">
+                <h1 id="divBack" class="display-4 fst-italic">Lab 6</h1>
+                <h3 id="divBack" class="display-4 fst-italic">James Gelfand</h3>
+                <h4 id="divBack" class="display-4 fst-italic">000275852</h4>
+                <p id="divBack"  class="lead my-3">Lab provides the ability to filter a news feed of various social media posts regarding problems of varying priority and view analysis of said posts.</p>
+            </div>
+            </div>
+        
+            <div class="row mb-2">
+            <div class="col-md-6">
+                <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+                <div class="col p-4 d-flex flex-column position-static">
+                    <h3 class="mb-0">News!</h3>
+                    <p class="card-text mb-auto">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.</p>
+                </div>
+                <div class="col-auto d-none d-lg-block">
+                    <img src="myimages/news.gif" height="250" alt="User">
+                </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+                <div class="col p-4 d-flex flex-column position-static">
+                    <h3 class="mb-0">Fire!</h3>
+                    <p class="card-text mb-auto">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.</p>
+                </div>
+                <div class="col-auto d-none d-lg-block">
+                    <img src="myimages/fire.gif" height="250" alt="User">
+                </div>
+                </div>
+            </div>
+            </div>
+
+            <div class="row mb-2">
+            <div class="col-md-6">
+                <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+                <div class="col p-4 d-flex flex-column position-static">
+                    <h3 class="mb-0">Flood!</h3>
+                    <p class="card-text mb-auto">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.</p>
+                </div>
+                <div class="col-auto d-none d-lg-block">
+                    <img src="myimages/flood.gif" height="250" alt="User">
+                </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+                <div class="col p-4 d-flex flex-column position-static">
+                    <h3 class="mb-0">Bird!</h3>
+                    <p class="card-text mb-auto">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.</p>
+                </div>
+                <div class="col-auto d-none d-lg-block">
+                    <img src="myimages/bird.gif" height="250" alt="User">
+                </div>
+                </div>
+            </div>
+            </div>
+        </div>`
+    };
+
+    const Feed = {
+      data() {
+        return {
+          filteredFeed: [],
+          fire: true,
+          flood: true,
+          power: true,
+          medical: true,
+          low: true,
+          med: true,
+          high: true,
+          crit: true,
+        }
+      },
+      template: 
+        `<div class="container">
+          <div class="row align-items-start">
+            <div class="col">
+              <div class="form-check form-switch">
+                  <input class="form-check-input" type="checkbox" id="fireBox" @change="fireChange" checked>
+                  <label class="form-check-label" for="fireBox">Toggle Fires</label>
+              </div>
+            </div>
+            <div class="col">
+              <div class="form-check form-switch">
+                  <input class="form-check-input" type="checkbox" id="floodBox" @change="floodChange" checked>
+                  <label class="form-check-label" for="floodBox">Toggle Floods</label>
+              </div>
+            </div>
+            <div class="col">
+              <div class="form-check form-switch">
+                  <input class="form-check-input" type="checkbox" id="powerBox" @change="powerChange" checked>
+                  <label class="form-check-label" for="powerBox">Toggle Power</label>
+              </div>
+            </div>
+            <div class="col">
+              <div class="form-check form-switch">
+                  <input class="form-check-input" type="checkbox" id="medicalBox" @change="medicalChange" checked>
+                  <label class="form-check-label" for="medicalBox">Toggle Medical</label>
+              </div>
+            </div>
+            <div class="col">
+              <div class="form-check form-switch">
+                  <input class="form-check-input" type="checkbox" id="lowBox" @change="lowChange" checked>
+                  <label class="form-check-label" for="lowBox">Toggle Low Priority</label>
+              </div>
+            </div>
+            <div class="col">
+              <div class="form-check form-switch">
+                  <input class="form-check-input" type="checkbox" id="medBox" @change="medChange" checked>
+                  <label class="form-check-label" for="medBox">Toggle Medium Priority</label>
+              </div>
+            </div>
+            <div class="col">
+              <div class="form-check form-switch">
+                  <input class="form-check-input" type="checkbox" id="highBox" @change="highChange" checked>
+                  <label class="form-check-label" for="highBox">Toggle High Priority</label>
+              </div>
+            </div>
+            <div class="col">
+              <div class="form-check form-switch">
+                  <input class="form-check-input" type="checkbox" id="criticalBox" @change="critChange" checked>
+                  <label class="form-check-label" for="criticalBox">Toggle Critical Priority</label>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div v-if="currentFeed.length">
+          <div v-for="feed in currentFeed" class="bg-white border mt-2">
+              <div>
+                  <div class="d-flex flex-row justify-content-between align-items-center p-2 border-bottom">
+                      <div class="d-flex flex-row align-items-center feed-text px-2"><img class="rounded-circle" :src="feed.image" alt="User" width="45">
+                          <div class="d-flex flex-column flex-wrap ml-2 px-2"><span class="font-weight-bold">{{feed.name}}</span><span class="text-black-50 time">{{feed.priority}}</span><span class="text-black-50 time">{{feed.problem}}</span></div>
+                      </div>
+                      <div class="feed-icon px-2"><i class="fa fa-ellipsis-v text-black-50"></i></div>
+                  </div>
+              </div>
+            <div class="p-2 px-3"><span>{{feed.content}}</span></div>
+          </div>
+        </div>
+        `,   
+      computed: {
+        currentFeed() {
+
+          var fireOn = '';
+          var floodOn = '';
+          var powerOn = '';
+          var medicalOn = '';
+
+          var lowOn = '';
+          var medOn = '';
+          var highOn = '';
+          var critOn = '';
+
+          // Problems
+          if(!this.fire) {
+            fireOn = "Fire";
+          }
+          if(!this.flood) {
+            floodOn = "Flood";
+          }
+          if(!this.power) {
+            powerOn = "Power";
+          }
+          if(!this.medical) {
+            medicalOn = "Medical";
+          }
+          // Priorities
+          if(!this.low) {
+            lowOn = "Low";
+          }
+          if(!this.med) {
+            medOn = "Medium";
+          }
+          if(!this.high) {
+            highOn = "High";
+          }
+          if(!this.crit) {
+            critOn = "Critical"
+          }
+
+          return this.$store.getters.getFeed.filter(feed => {
+              return feed.problem !== fireOn && feed.problem !== floodOn && feed.problem !== powerOn && feed.problem !== medicalOn
+              && feed.priority !== lowOn && feed.priority !== medOn && feed.priority !== highOn && feed.priority !== critOn;
+          });
+
+        },
+      },
+      methods: {
+        fireChange(event) {
+          this.fire = !this.fire;
+        },
+        floodChange(event) {
+          this.flood = !this.flood;
+        },
+        powerChange(event) {
+          this.power = !this.power;
+        },
+        medicalChange(event) {
+          this.medical = !this.medical;
+        },
+        lowChange(event) {
+          this.low = !this.low;
+        },
+        medChange(event) {
+          this.med = !this.med;
+        },
+        highChange(event) {
+          this.high = !this.high;
+        },
+        critChange(event) {
+          this.crit = !this.crit;
+        },
+
+      }
+    };
+
+    const Analytics = {
+      data() {
+        return {
+          posts: [],
+          // Fire
+          firelow: 0,
+          firemed: 0,
+          firehigh: 0,
+          firecrit: 0,
+          // Flood
+          floodlow: 0,
+          floodmed: 0,
+          floodhigh: 0,
+          floodcrit: 0,
+          // Power
+          powerlow: 0,
+          powermed: 0,
+          powerhigh: 0,
+          powercrit: 0,
+          // Medical
+          medicallow: 0,
+          medicalmed: 0,
+          medicalhigh: 0,
+          medicalcrit: 0,
+          // Totals
+          // Levels
+          lowtotal: 0,
+          medtotal: 0,
+          hightotal: 0,
+          crittotal: 0,
+          // Disasters
+          firetotal: 0,
+          floodtotal: 0,
+          medicaltotal: 0,
+          powertotal: 0,
+          // Final Total
+          disastertotal: 0,
+        }
+      },
+      template: 
+        `<div class="container">
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th scope="col"></th>
+                <th scope="col">Fire</th>
+                <th scope="col">Flood</th>
+                <th scope="col">Power</th>
+                <th scope="col">Medical</th>
+                <th scope="col">Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">Low</th>
+                <td>{{this.firelow}}</td>
+                <td>{{this.floodlow}}</td>
+                <td>{{this.powerlow}}</td>
+                <td>{{this.medicallow}}</td>
+                <td>{{this.lowtotal}}</td>
+              </tr>
+              <tr>
+                <th scope="row">Medium</th>
+                <td>{{this.firemed}}</td>
+                <td>{{this.floodmed}}</td>
+                <td>{{this.powermed}}</td>
+                <td>{{this.medicalmed}}</td>
+                <td>{{this.medtotal}}</td>
+              </tr>
+              <tr>
+                <th scope="row">High</th>
+                <td>{{this.firehigh}}</td>
+                <td>{{this.floodhigh}}</td>
+                <td>{{this.powerhigh}}</td>
+                <td>{{this.medicalhigh}}</td>
+                <td>{{this.hightotal}}</td>
+              </tr>
+              <tr>
+                <th scope="row">Critical</th>
+                <td>{{this.firecrit}}</td>
+                <td>{{this.floodcrit}}</td>
+                <td>{{this.powercrit}}</td>
+                <td>{{this.medicalcrit}}</td>
+                <td>{{this.crittotal}}</td>
+              </tr>
+              <tr>
+                <th scope="row">Total</th>
+                <td>{{this.firetotal}}</td>
+                <td>{{this.floodtotal}}</td>
+                <td>{{this.powertotal}}</td>
+                <td>{{this.medicaltotal}}</td>
+                <td>{{analysis}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        `,   
+      computed: {
+        // Totals
+        analysis() {
+          var count = this.$store.getters.getFeed.length;
+          
+          this.firecrit = this.$store.getters.getFeed.filter(post => post.problem === "Fire" && post.priority === "Critical").length;
+          this.floodcrit = this.$store.getters.getFeed.filter(post => post.problem === "Flood" && post.priority === "Critical").length;
+          this.powercrit = this.$store.getters.getFeed.filter(post => post.problem === "Power" && post.priority === "Critical").length;
+          this.medicalcrit = this.$store.getters.getFeed.filter(post => post.problem === "Medical" && post.priority === "Critical").length;
+          this.crittotal = this.$store.getters.getFeed.filter(post => post.priority === "Critical").length;
+
+          this.firehigh = this.$store.getters.getFeed.filter(post => post.problem === "Fire" && post.priority === "High").length;
+          this.floodhigh = this.$store.getters.getFeed.filter(post => post.problem === "Flood" && post.priority === "High").length;
+          this.powerhigh = this.$store.getters.getFeed.filter(post => post.problem === "Power" && post.priority === "High").length;
+          this.medicalhigh = this.$store.getters.getFeed.filter(post => post.problem === "Medical" && post.priority === "High").length;
+          this.hightotal = this.$store.getters.getFeed.filter(post => post.priority === "High").length;
+
+          this.firemed = this.$store.getters.getFeed.filter(post => post.problem === "Fire" && post.priority === "Medium").length;
+          this.floodmed = this.$store.getters.getFeed.filter(post => post.problem === "Flood" && post.priority === "Medium").length;
+          this.powermed = this.$store.getters.getFeed.filter(post => post.problem === "Power" && post.priority === "Medium").length;
+          this.medicalmed = this.$store.getters.getFeed.filter(post => post.problem === "Medical" && post.priority === "Medium").length;
+          this.medtotal = this.$store.getters.getFeed.filter(post => post.priority === "Medium").length;
+
+          this.firelow = this.$store.getters.getFeed.filter(post => post.problem === "Fire" && post.priority === "Low").length;
+          this.floodlow = this.$store.getters.getFeed.filter(post => post.problem === "Flood" && post.priority === "Low").length;
+          this.powerlow = this.$store.getters.getFeed.filter(post => post.problem === "Power" && post.priority === "Low").length;
+          this.medicallow = this.$store.getters.getFeed.filter(post => post.problem === "Medical" && post.priority === "Low").length;
+          this.lowtotal = this.$store.getters.getFeed.filter(post => post.priority === "Low").length;
+
+          this.firetotal = this.$store.getters.getFeed.filter(post => post.problem === "Fire").length;
+          this.floodtotal = this.$store.getters.getFeed.filter(post => post.problem === "Flood").length;
+          this.powertotal = this.$store.getters.getFeed.filter(post => post.problem === "Power").length;
+          this.medicaltotal = this.$store.getters.getFeed.filter(post => post.problem === "Medical").length;
+          return count;
+        },
+      },
+    };
+
+    // Navigation Routes
+    const routes = [
+        { path: "/", component: Home },
+        { path: "/feed", component: Feed },
+        { path: "/analytics", component: Analytics },
+    ]
+
+    // Vue Router
+    const router = VueRouter.createRouter({
+        history: VueRouter.createWebHashHistory(),
+        routes: routes,
+    });
+
+    // Mount the app
+    app.use(store);
+    app.use(router);
+    app.mount('#app');
+  </script>
+
+  <!-- Optional JavaScript; choose one of the two! -->
+
+  <!-- Option 1: Bootstrap Bundle with Popper -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+</body>
+</html>
